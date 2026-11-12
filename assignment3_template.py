@@ -51,11 +51,18 @@ def identify_support_vectors():
 
     Return their 1-based point IDs and explain your choice in the report.
     """
-    # TODO: Inspect the plot and identify all support vectors.
-    raise NotImplementedError("Identify and justify the support vectors.")
+    # the separator is a line going though (x1,x2) points: (0,1.5) (0.5,1) (1,0.5) (1.5, 0)
+    # i.e. the line x1 + x2 = 1.5. The points closest to that line (one on
+    # each side) are the support vectors:
+    #   point 1 (1,1), y=+1 -> distance |1+1-1.5|/sqrt(2) = 0.354
+    #   point 5 (1,0), y=-1 -> distance |1+0-1.5|/sqrt(2) = 0.354
+    #   point 6 (0,1), y=-1 -> distance |0+1-1.5|/sqrt(2) = 0.354
+    # points 2 (1,2), 3 (2,1), 4 (0,0) are all 1.5/sqrt(2) = 1.06 away, so
+    # moving them would not change the boundary -> not support vectors.
+    return (1, 5, 6)
 
 
-def derive_svm_separator():
+def derive_svm_separator()->tuple:
     """Q1(b), 10 points for the boundary and 10 for the geometric margin.
 
     Use a linear, hard-margin SVM. The decision boundary is w dot x + b = 0;
@@ -64,9 +71,31 @@ def derive_svm_separator():
     Return (weights, bias, geometric_margin), with weights a pair of numbers.
     Explain the derivation and your margin convention in the written report.
     """
-    # TODO: Derive the maximum-margin separating line from the support vectors.
-    # TODO: Determine the geometric margin and state its meaning.
-    raise NotImplementedError("Derive the SVM boundary and geometric margin.")
+    import numpy as np
+
+    # optimize min(1/2 * wlen**2) subject to yn(w*xn+b)>=1 for all n
+    # the constraint is tight (= 1) exactly at the support vectors, so
+    # y_n (w . x_n + b) = 1  <=>  w . x_n + b = y_n   (since y_n = +/-1)
+    # point 1 (1,1): w1 + w2 + b = +1
+    # point 5 (1,0): w1      + b = -1
+    # point 6 (0,1):      w2 + b = -1
+    # -> w1 = w2 = 2, b = -3, i.e. 2*x1 + 2*x2 - 3 = 0  (same as x1 + x2 = 1.5)
+    sv_ids = identify_support_vectors()
+    sv_x = np.array([SVM_X[i - 1] for i in sv_ids], dtype=float)
+    sv_y = np.array([SVM_Y[i - 1] for i in sv_ids], dtype=float)
+    # rows are [x1, x2, 1] so that A @ [w1, w2, b] = y
+    A = np.column_stack([sv_x, np.ones(len(sv_ids))])
+    w1, w2, b = np.linalg.solve(A, sv_y)
+
+    # margin = (1/w_len) on each side of w
+    # this is the perpendicular distance from the boundary to the closest
+    # points on each side: 1/||w|| = 1/sqrt(2^2 + 2^2) = 1/(2*sqrt(2)) ~= 0.354
+    # (NOT 0.5 -- 0.5 is the horizontal/vertical gap on the grid, not the
+    # perpendicular distance). Full width between w.x+b=+1 and w.x+b=-1 is
+    # 2/||w|| = 1/sqrt(2) ~= 0.707.
+    w_len = np.sqrt(w1 ** 2 + w2 ** 2)
+    geometric_margin = 1 / w_len
+    return (float(w1), float(w2)), float(b), float(geometric_margin)
 
 
 def main():
