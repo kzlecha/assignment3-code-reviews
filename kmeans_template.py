@@ -7,8 +7,6 @@ import argparse
 from pathlib import Path
 
 from numpy import ndarray
-# from sklearn.metrics.pairwise import euclidean_distances
-
 from utils import _euclidean_distance
 
 K_VALUES = (2, 3, 4, 6, 10)
@@ -16,12 +14,6 @@ K_VALUES = (2, 3, 4, 6, 10)
 
 def update_assignments(data: ndarray, centroids: ndarray)-> ndarray:
     """Return one cluster index per row, using nearest-centroid distance.
-
-    inputs:
-        @param data: array of shape (n, d) data observations
-        @param centroids: array of shape (k, d) centroids
-    output:
-        integer array with shape (n,) representing assignment
 
     Equal-Distance Tie: in case of multiple occurrences of the minimum value,
     the indices corresponding to the first occurrence are returned.
@@ -46,12 +38,6 @@ def update_centroids(
     data: ndarray, centroids: ndarray, assignments: ndarray
 ) -> ndarray:
     """Return an updated (k, d) centroid array based on cluster assignments.
-
-    inputs:
-        @param data: array of shape (n, d) data observations
-        @param centroids: array of shape (k, d) centroids
-        @param assignments: array with shape (n,) assigning a datapoint to a cluster
-
 
     Empty cluster policy: if no points are assigned to cluster i, retain its previous
     centroid. This can happen when the initializer samples the same row twice and
