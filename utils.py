@@ -1,6 +1,6 @@
 from numpy import ndarray, power, sqrt, sum as np_sum
 
-def _euclidean_distance(x: ndarray, y: ndarray) -> ndarray:
+def euclidean_distance(x: ndarray, y: ndarray) -> ndarray:
     """
     find the euclidean distance between data and centroid
 
