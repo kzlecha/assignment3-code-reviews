@@ -9,8 +9,6 @@ from pathlib import Path
 
 import numpy as np
 
-# plain (non-relative) import so the file runs as a script:
-#   python noisy_classification.py
 from utils import _euclidean_distance
 
 
@@ -42,12 +40,6 @@ def corrupt_training_labels(clean_labels: np.ndarray, rng)->np.ndarray:
     Select flip probabilities from the original labels. A label flipped in
     one direction cannot be flipped again by the other rule.
     Returns a new array and leaves clean_labels unchanged.
-
-    Inputs:
-        @param clean_labels: numpy ndarray representing original labels
-        @param rng: numpy.random.default_rng
-    Output:
-        - a new array with corrupted labels
     """
     # flip probability for each example, chosen from its original label
     # ref: https://numpy.org/doc/2.5/reference/generated/numpy.where.html
@@ -66,13 +58,6 @@ def repair_labels_knn(
     train_features: np.ndarray, noisy_labels: np.ndarray, neighbors: int = 5
 ) -> np.ndarray:
     """repair labels for each point based on each point's k nearest neighbors
-
-    Inputs:
-        @param train_features: ndarray of features
-        @param noisy_labels: ndarray of labels that contain noise
-        @param neighbors: integer stating how many neighbors to use
-    Output:
-        - new array containing new labels after repair
 
     Implementation Notes:
         - implemented using numpy and approach from lecture/textbook, but
@@ -123,14 +108,6 @@ def run_comparison(
 
     Training and test sets are generated at the start and then corruption and
     retraining are repeated over a set of trials.
-
-    Inputs:
-        @param repeats: number of experiments to run
-        @param seed: integer seed to pass into default rng
-        @param neighbors: integer number of neighbors used in KNN repair
-        @param output_path: path to save the results as csv
-    Outputs:
-        - list of accuracy scores from each experiment
     """
     # generate independent clean training and test splits ONCE (fixed for
     # every trial); one seeded rng makes the whole run reproducible
