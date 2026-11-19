@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 
 from numpy import ndarray
-from utils import _euclidean_distance
+from utils import euclidean_distance
 
 K_VALUES = (2, 3, 4, 6, 10)
 
@@ -25,7 +25,7 @@ def update_assignments(data: ndarray, centroids: ndarray)-> ndarray:
     # calculate the euclidean distance to each centroid
     # one column at a time: all n points vs. centroid k (broadcast in numpy)
     for k in range(centroids.shape[0]):
-        distances[:, k] = _euclidean_distance(data, centroids[k])
+        distances[:, k] = euclidean_distance(data, centroids[k])
 
     # assign each point to a cluster based on minimum distance to centroid
     # tie rule: return the index of the first minimum (lowest cluster index)
