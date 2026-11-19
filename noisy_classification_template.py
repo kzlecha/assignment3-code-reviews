@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
-from utils import _euclidean_distance
+from utils import euclidean_distance
 
 
 SVM_C = 1.0
@@ -71,7 +71,7 @@ def repair_labels_knn(
     n = train_features.shape[0]
     distances = np.empty((n, n))
     for i in range(n):
-        distances[:, i] = _euclidean_distance(train_features, train_features[i])
+        distances[:, i] = euclidean_distance(train_features, train_features[i])
 
     # exclude each point from its own neighborhood (distance to itself is 0)
     np.fill_diagonal(distances, np.inf)
